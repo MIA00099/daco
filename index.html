@@ -546,7 +546,7 @@ tbody tr:hover td { background: #FDFAF7; }
 /* File Input Custom */
 .file-upload-wrapper { position: relative; width: 100%; height: 120px; border: 2px dashed var(--stone-200); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--stone-400); cursor: pointer; transition: .2s; background: var(--cream); overflow: hidden;}
 .file-upload-wrapper:hover { border-color: var(--gold); background: var(--white); color: var(--gold); }
-.file-upload-wrapper input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 2; }
+.file-upload-wrapper input[type="file"] { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
 .file-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; display: none; transition: opacity .3s; }
 
 /* ════════════════════════════════════════
@@ -1012,14 +1012,14 @@ tbody tr:hover td { background: #FDFAF7; }
   <div class="field">
     <label>Hero/Profile Image</label>
 
-    <div class="file-upload-wrapper" onclick="document.getElementById('admin-hero-upload').click()">
+    <label class="file-upload-wrapper" for="admin-hero-upload">
       <i class="fas fa-camera" style="font-size:24px;margin-bottom:8px;" id="hero-upload-icon"></i>
-      <span style="font-size:12px;font-weight:600;" id="hero-upload-text">Upload profile image</span>
+      <span style="font-size:12px;font-weight:600;" id="hero-upload-text">Select profile image once</span>
 
       <input type="file" id="admin-hero-upload" accept="image/*">
 
       <img id="admin-hero-preview" class="file-preview">
-    </div>
+    </label>
   </div>
 </div>
 
@@ -1087,22 +1087,22 @@ tbody tr:hover td { background: #FDFAF7; }
           
           <div class="field">
             <label>Product Image</label>
-            <div class="file-upload-wrapper" onclick="document.getElementById('ap-file').click()">
+            <label class="file-upload-wrapper" for="ap-file">
               <i class="fas fa-image" style="font-size:24px;margin-bottom:8px;" id="upload-icon"></i>
-              <span style="font-size:12px;font-weight:600;" id="upload-text">Click to upload image</span>
+              <span style="font-size:12px;font-weight:600;" id="upload-text">Select image once</span>
               <input type="file" id="ap-file" accept="image/*" onchange="handleImageUpload(event)">
               <img id="ap-preview" class="file-preview">
-            </div>
+            </label>
             <input type="hidden" id="ap-img-data">
           </div>
 
           <div class="field">
             <label>Product Video <span style="color:var(--stone-400);font-weight:400;">(optional)</span></label>
-            <div class="file-upload-wrapper" onclick="document.getElementById('ap-video-file').click()">
+            <label class="file-upload-wrapper" for="ap-video-file">
               <i class="fas fa-video" style="font-size:24px;margin-bottom:8px;"></i>
-              <span style="font-size:12px;font-weight:600;" id="video-upload-text">Click to upload video</span>
+              <span style="font-size:12px;font-weight:600;" id="video-upload-text">Select video once</span>
               <input type="file" id="ap-video-file" accept="video/*" onchange="handleVideoUpload(event)">
-            </div>
+            </label>
             <video id="ap-video-preview" controls style="display:none;width:100%;border-radius:var(--radius);margin-top:8px;max-height:200px;background:#000;"></video>
             <input type="hidden" id="ap-video-data">
           </div>
@@ -1485,7 +1485,9 @@ tbody tr:hover td { background: #FDFAF7; }
           saveBtn.disabled = false; 
           saveBtn.innerHTML = 'Save Product'; 
         }
-        toast('Image successfully stored in cloud!');
+        toast('Image uploaded once and ready!');
+        const fileInput = document.getElementById('ap-file');
+        if(fileInput) fileInput.value = '';
       } else {
         throw new Error('Upload failed');
       }
@@ -1493,7 +1495,7 @@ tbody tr:hover td { background: #FDFAF7; }
       console.error("ImgBB Upload Error:", error);
       toast('Image upload failed! Please try again.');
       preview.style.display = 'none';
-      uploadText.textContent = "Click to upload image";
+      uploadText.textContent = "Select image once";
       document.getElementById('ap-file').value = '';
       if(saveBtn) { 
         saveBtn.disabled = false; 
@@ -1543,7 +1545,9 @@ tbody tr:hover td { background: #FDFAF7; }
         videoPreview.style.opacity = '1';
         videoText.textContent = 'Video ready!';
         if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = 'Save Product'; }
-        toast('Video uploaded to Cloudinary!');
+        toast('Video uploaded once and ready!');
+        const fileInput = document.getElementById('ap-video-file');
+        if(fileInput) fileInput.value = '';
       } else {
         throw new Error(result.error?.message || 'Upload failed');
       }
@@ -1551,7 +1555,7 @@ tbody tr:hover td { background: #FDFAF7; }
       console.error('Cloudinary Upload Error:', error);
       toast('Video upload failed: ' + error.message);
       videoPreview.style.display = 'none';
-      videoText.textContent = 'Click to upload video';
+      videoText.textContent = 'Select video once';
       document.getElementById('ap-video-file').value = '';
       document.getElementById('ap-video-data').value = '';
       if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = 'Save Product'; }
@@ -2114,7 +2118,7 @@ tbody tr:hover td { background: #FDFAF7; }
       document.getElementById('video-upload-text').textContent = 'Video loaded';
     } else {
       videoPreview.style.display = 'none';
-      document.getElementById('video-upload-text').textContent = 'Click to upload video';
+      document.getElementById('video-upload-text').textContent = 'Select video once';
     }
   }
 
@@ -2152,8 +2156,8 @@ tbody tr:hover td { background: #FDFAF7; }
       videoPreview.style.display = 'none';
     }
 
-    setText('upload-text', 'Click to upload image');
-    setText('video-upload-text', 'Click to upload video');
+    setText('upload-text', 'Select image once');
+    setText('video-upload-text', 'Select video once');
   }
 
   async function deleteProduct(id) {
